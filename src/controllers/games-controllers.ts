@@ -9,6 +9,12 @@ export async function gamesPost(req: Request, res: Response) {
     return res.status(httpStatus.CREATED).send(result);
 }
 
+export async function gamesGet(_req: Request, res: Response) {
+    const result = await gamesService.findGames();
+    return res.status(httpStatus.OK).send(result);
+}
+
 export const gamesController = {
-    gamesPost
+    gamesPost,
+    gamesGet
 };

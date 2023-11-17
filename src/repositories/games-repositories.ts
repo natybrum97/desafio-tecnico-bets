@@ -13,7 +13,13 @@ async function findGame(gameId: number) {
   });
 }
 
+async function findManyGames() {
+  const result = await prisma.game.findMany();
+  return result;
+}
+
 export const gamesRepository = {
   createGames,
-  findGame
+  findGame,
+  findManyGames
 };
