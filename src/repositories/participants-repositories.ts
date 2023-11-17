@@ -20,8 +20,14 @@ async function updateBalance(participantId: number, newBalance: number) {
   });
 }
 
+async function findManyParticipants() {
+  const result = await prisma.participant.findMany();
+  return result;
+}
+
 export const participantsRepository = {
   createParticipants,
   findParticipants,
-  updateBalance
+  updateBalance,
+  findManyParticipants
 };

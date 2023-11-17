@@ -9,6 +9,12 @@ async function createParticipants(name: string, balance: number): Promise<Partic
     return participant;
 }
 
+async function findParticipants() {
+    const participants = await participantsRepository.findManyParticipants();
+    return participants;
+  }
+
 export const participantsService = {
-    createParticipants
+    createParticipants,
+    findParticipants
 };

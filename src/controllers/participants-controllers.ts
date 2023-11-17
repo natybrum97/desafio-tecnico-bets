@@ -9,6 +9,12 @@ export async function participantsPost(req: Request, res: Response) {
     return res.status(httpStatus.CREATED).send(result);
 }
 
+export async function participantsGet(_req: Request, res: Response) {
+    const result = await participantsService.findParticipants();
+    return res.status(httpStatus.OK).send(result);
+  }
+
 export const participantsController = {
-    participantsPost
+    participantsPost,
+    participantsGet
 };
