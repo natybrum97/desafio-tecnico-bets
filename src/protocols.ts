@@ -24,6 +24,15 @@ export type InputBets = {
 	participantId: number;
 };
 
+export type InputBetsPost = {
+	homeTeamScore: number;
+	awayTeamScore: number;
+	amountBet: number;
+	gameId: number;
+	participantId: number;
+	status: string;
+};
+
 export type InputGames = {
 	homeTeamName: string;
 	awayTeamName: string;
@@ -43,7 +52,20 @@ export type Games = {
 	updatedAt: Date;
 	homeTeamName: string;
 	awayTeamName: string;
-	homeTeamScore: number; 
-	awayTeamScore: number; 
+	homeTeamScore: number;
+	awayTeamScore: number;
 	isFinished: boolean;
 }
+
+export type Bets = {
+	id: number;
+	createdAt: Date;
+	updatedAt: Date;
+	homeTeamScore: number;
+	awayTeamScore: number;
+	amountBet: number;
+	gameId: number;
+	participantId: number;
+	status: string;
+	amountWon: number | null;
+};
