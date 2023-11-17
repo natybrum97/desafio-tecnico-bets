@@ -32,6 +32,12 @@ export function handleApplicationErrors(
     });
   }
 
+  if (err.name === 'BalanceUnauthorized') {
+    return res.status(httpStatus.UNAUTHORIZED).send({
+      message: err.message,
+    });
+  }
+
   if (err.hasOwnProperty('status') && err.name === 'RequestError') {
     return res.status((err as RequestError).status).send({
       message: err.message,
