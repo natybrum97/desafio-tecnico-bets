@@ -1,9 +1,9 @@
-import prisma from "../database";
-import { InputBetsPost, InputResultGame, Bets } from "../protocols";
+import prisma from '../database';
+import { InputBetsPost, InputResultGame, Bets } from '../protocols';
 
 async function createBets({ homeTeamScore, awayTeamScore, amountBet, gameId, participantId, status }: InputBetsPost) {
   return prisma.bet.create({
-    data: { homeTeamScore, awayTeamScore, amountBet, gameId, participantId, status }
+    data: { homeTeamScore, awayTeamScore, amountBet, gameId, participantId, status },
   });
 }
 
@@ -15,7 +15,7 @@ async function GamesWon(gamesData: InputResultGame, id: number) {
         { awayTeamScore: gamesData.awayTeamScore },
         { gameId: id },
         { status: 'PENDING' },
-      ]
+      ],
     },
   });
 }
@@ -32,10 +32,7 @@ async function gamesLost(id: number, betsWon: Bets[]) {
 async function AllBets(id: number) {
   return prisma.bet.findMany({
     where: {
-      AND: [
-        { gameId: id },
-        { status: 'PENDING' },
-      ]
+      AND: [{ gameId: id }, { status: 'PENDING' }],
     },
   });
 }
@@ -43,27 +40,32 @@ async function AllBets(id: number) {
 async function updateGamesWon(betsWon: Bets[], totalWinningAmount: number, totalAmount: number) {
   const totalWonByParticipant = await calculateTotalWonByParticipant(betsWon, totalWinningAmount, totalAmount);
   const combinedUpdates = [
-    ...betsWon.map((bet) => prisma.bet.update({
-      where: { id: bet.id },
-      data: {
-        status: 'WON',
-        amountWon: Math.floor((bet.amountBet / totalWinningAmount) * totalAmount * (1 - 0.3)),
-      },
-    })),
-    ...Object.entries(totalWonByParticipant).map(([participantId, totalWon]) => prisma.participant.update({
-      where: { id: Number(participantId) },
-      data: { balance: { increment: totalWon } },
-    })),
+    ...betsWon.map((bet) =>
+      prisma.bet.update({
+        where: { id: bet.id },
+        data: { status: 'WON', amountWon: Math.floor((bet.amountBet / totalWinningAmount) * totalAmount * (1 - 0.3)) },
+      }),
+    ),
+    ...Object.entries(totalWonByParticipant).map(([participantId, totalWon]) =>
+      prisma.participant.update({
+        where: { id: Number(participantId) },
+        data: { balance: { increment: totalWon } },
+      }),
+    ),
   ];
   prisma.$transaction(combinedUpdates);
 }
 
-async function calculateTotalWonByParticipant(betsWon: Bets[], totalWinningAmount: number, totalAmount: number): Promise<Record<number, number>> {
+async function calculateTotalWonByParticipant(
+  betsWon: Bets[],
+  totalWinningAmount: number,
+  totalAmount: number,
+): Promise<Record<number, number>> {
   const totalWonByParticipant: Record<number, number> = {};
   betsWon.forEach((bet) => {
-    totalWonByParticipant[bet.participantId] = (totalWonByParticipant[bet.participantId] || 0) + Math.floor(
-      (bet.amountBet / totalWinningAmount) * totalAmount * (1 - 0.3)
-    );
+    totalWonByParticipant[bet.participantId] =
+      (totalWonByParticipant[bet.participantId] || 0) +
+      Math.floor((bet.amountBet / totalWinningAmount) * totalAmount * (1 - 0.3));
   });
   return totalWonByParticipant;
 }
@@ -73,7 +75,7 @@ async function updateGamesLost(betsLost: Bets[]) {
     return prisma.bet.update({
       where: { id: bet.id },
       data: {
-        status: "LOST",
+        status: 'LOST',
         amountWon: 0,
       },
     });
@@ -88,5 +90,5 @@ export const betsRepository = {
   updateGamesWon,
   AllBets,
   updateGamesLost,
-  gamesLost
+  gamesLost,
 };

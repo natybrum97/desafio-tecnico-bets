@@ -1,22 +1,22 @@
-import prisma from "../database";
-import { InputParticipants } from "../protocols";
+import prisma from '../database';
+import { InputParticipants } from '../protocols';
 
 async function createParticipants({ name, balance }: InputParticipants) {
   return prisma.participant.create({
-    data: { name, balance }
+    data: { name, balance },
   });
 }
 
 async function findParticipants(participantId: number) {
   return prisma.participant.findFirst({
-    where: { id: participantId }
+    where: { id: participantId },
   });
 }
 
 async function updateBalance(participantId: number, newBalance: number) {
   return prisma.participant.update({
     where: { id: participantId },
-    data: { balance: newBalance }
+    data: { balance: newBalance },
   });
 }
 
@@ -29,5 +29,5 @@ export const participantsRepository = {
   createParticipants,
   findParticipants,
   updateBalance,
-  findManyParticipants
+  findManyParticipants,
 };
