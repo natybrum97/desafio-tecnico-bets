@@ -1,5 +1,5 @@
 import prisma from "../database";
-import { InputGames } from "../protocols";
+import { InputGames, InputResultGame } from "../protocols";
 
 async function createGames({ homeTeamName, awayTeamName }: InputGames) {
   return prisma.game.create({
@@ -18,8 +18,30 @@ async function findManyGames() {
   return result;
 }
 
+async function findGameById(id: number) {
+  return prisma.game.findFirst({
+    where: { id },
+    include: {
+      bets: true
+    },
+  });
+}
+
+async function updateGame(gamesData: InputResultGame, id: number) {
+  return prisma.game.update({
+    where: { id },
+    data: {
+      homeTeamScore: gamesData.homeTeamScore,
+      awayTeamScore: gamesData.awayTeamScore,
+      isFinished: true
+    }
+  });
+}
+
 export const gamesRepository = {
   createGames,
   findGame,
-  findManyGames
+  findManyGames,
+  findGameById,
+  updateGame
 };

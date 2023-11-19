@@ -38,6 +38,11 @@ export type InputGames = {
 	awayTeamName: string;
 };
 
+export type InputResultGame = {
+	homeTeamScore: number;
+	awayTeamScore: number;
+};
+
 export type Participants = {
 	id: number;
 	createdAt: Date;
