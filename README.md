@@ -6,6 +6,10 @@ Backend application simulation for the junior backend node technical position ch
 
 Back-end application for a betting system of a betting house aiming to automate its processes to compete with these applications.
 
+### Deployment link
+
+- https://technical-challenge-bets-ff36.onrender.com
+
 ### Technologies Used
 
 For this project, the following technologies were used:
