@@ -24,7 +24,7 @@ export async function gamefinishPost(req: Request, res: Response) {
   const { homeTeamScore, awayTeamScore } = req.body as InputResultGame;
   const id = Number(req.params.id);
   const result = await gamesService.GameFinished(homeTeamScore, awayTeamScore, id);
-  return res.status(httpStatus.CREATED).send(result);
+  return res.status(httpStatus.OK).send(result);
 }
 
 export const gamesController = {

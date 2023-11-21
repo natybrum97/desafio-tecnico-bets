@@ -1,6 +1,7 @@
-import { Games, InputGames, InputResultGame, Bets } from '../protocols';
+import { Games, InputGames, InputResultGame, Bets, ObjectBets } from '../protocols';
 import { gamesRepository } from '../repositories/games-repositories';
 import { invalidDataError } from '../errors/invalid-data-error';
+import { notFoundError } from '../errors/not-found-error';
 import { gameFinished } from '../errors/game-finished-error';
 import { betsRepository } from '../repositories/bets-repositories';
 
@@ -19,10 +20,9 @@ async function GameFinished(homeTeamScore: number, awayTeamScore: number, id: nu
   await businessRules(id);
   const gamesData: InputResultGame = { homeTeamScore, awayTeamScore };
   const betsWon = await betsRepository.GamesWon(gamesData, id);
-  const AllBets = await betsRepository.AllBets(id);
-  const totalWinningAmount = betsWon.reduce((sum, bet) => sum + bet.amountBet, 0);
-  const totalAmount = AllBets.reduce((sum, bet) => sum + bet.amountBet, 0);
-  await updateWonAndLost(id, betsWon, totalWinningAmount, totalAmount);
+  const allBets = await betsRepository.AllBets(id);
+  const datas = await calculations(betsWon, allBets);
+  await updateWonAndLost(id, betsWon, datas.totalWinningAmount, datas.totalAmount);
   const updategame = await gamesRepository.updateGame(gamesData, id);
   return updategame;
 }
@@ -30,7 +30,7 @@ async function GameFinished(homeTeamScore: number, awayTeamScore: number, id: nu
 async function businessRules(id: number): Promise<void> {
   if (!id || isNaN(id)) throw invalidDataError('id');
   const game = await gamesRepository.findGameById(id);
-  if (!game) throw invalidDataError('id');
+  if (!game) throw notFoundError();
   if (game.isFinished === true) throw gameFinished();
 }
 
@@ -45,9 +45,17 @@ async function updateWonAndLost(
   await betsRepository.updateGamesLost(betsLost);
 }
 
+async function calculations(betsWon: ObjectBets[], allBets: ObjectBets[]) {
+  const totalWinningAmount = betsWon.reduce((sum, bet) => sum + bet.amountBet, 0);
+  const totalAmount = allBets.reduce((sum, bet) => sum + bet.amountBet, 0);
+
+  return { totalWinningAmount, totalAmount };
+}
+
 async function getGamesById(id: number) {
   if (!id || isNaN(id)) throw invalidDataError('id');
   const game = await gamesRepository.findGameById(id);
+  if (!game) throw notFoundError();
   return game;
 }
 
@@ -56,4 +64,6 @@ export const gamesService = {
   findGames,
   getGamesById,
   GameFinished,
+  updateWonAndLost,
+  calculations,
 };

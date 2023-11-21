@@ -74,3 +74,16 @@ export type Bets = {
   status: string;
   amountWon: number | null;
 };
+
+export type ObjectBets = {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  homeTeamScore: number;
+  awayTeamScore: number;
+  amountBet: number;
+  gameId: number;
+  participantId: number;
+  status: string;
+  amountWon: number;
+};
