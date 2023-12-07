@@ -66,7 +66,7 @@ npm i
 
 ```
 
-3. Configure the .env.development and .env.test files using the .env.example file.
+3. Configure the .env and .env.test files using the .env.example file.
 
 4. Execute all scripts to run migrations:
 
@@ -108,4 +108,4 @@ npm start
 There are several things you need to do when you add new ENV VARIABLES:
 
 - Add them to `.env.example` file
-- Add them to your local `.env.development` and `.env.test` files
+- Add them to your local `.env` and `.env.test` files
